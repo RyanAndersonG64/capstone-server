@@ -73,12 +73,12 @@ For each person being served: <br>
         Scoop a scoopful of pasta out of the pot/baking dish <br>
         Place the scoop of pasta in the bowl <br>
 
-    Give the bowl to the person <br>
-    If they want a spoon: <br>
-        Give them a spoon <br>
-   	Otherwise, give them a fork <br>
+Give the bowl to the person <br>
+If they want a spoon: <br>
+    Give them a spoon <br>
+Otherwise, give them a fork <br>
 
-    Give them a napkin <br>
+Give them a napkin <br>
 
 
 
