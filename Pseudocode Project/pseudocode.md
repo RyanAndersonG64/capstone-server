@@ -2,7 +2,7 @@
 
 ## Preparation
 If making baked macaroni and cheese: \
-    Preheat oven to 400 degrees Fahrenheit \
+   > Preheat oven to 400 degrees Fahrenheit \
     Otherwise, leave oven off and move to next step
 Fill a large pot halfway with water
 Place the pot on the stove
