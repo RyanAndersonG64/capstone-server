@@ -1,0 +1,50 @@
+/* Your code goes here, if needed */
+
+
+
+/* DO NOT CHANGE CODE BELOW THIS LINE */
+.red {
+    background-color: darkred;
+    color: white;
+}
+
+.orange {
+    background-color: darkorange;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.green {
+    background-color: darkgreen;
+    color: white;
+}
+
+.blue {
+    background-color: navy;
+    color: white;
+}
+
+.purple {
+    background-color: purple;
+    color: white;
+}
+
+.black {
+    background-color: black;
+    color: white;
+}
+
+.gray {
+    background-color: darkslategray;
+    color: white;
+}
+
+div[class*="col"] {
+    min-height: 100px;
+}
+
+div[class*="container"] {
+    min-height: 100px;
+}
