@@ -1,14 +1,14 @@
-//initial conditions
+//initial conditions, starts app on home screen with appropriate text and buttons
 let activeScreen = 0;
 updateButtons();
 document.querySelector(".symbolsList").style.visibility="hidden";
 
-function saveScreen(){
+function saveScreen(){ //stores active screen to be read if page is refreshed
         sessionStorage.setItem("refresh", "true");
         sessionStorage.setItem("storedScreen", activeScreen);
 }
 
-window.onload = function() {
+window.onload = function() { //if page is refreshed, it loads the active screen instead of the home screen
     let refreshing = sessionStorage.getItem("refresh");
     if (refreshing) {
         activeScreen = sessionStorage.getItem("storedScreen");
