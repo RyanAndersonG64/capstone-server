@@ -1,12 +1,29 @@
+//initial conditions
 let activeScreen = 0;
 updateButtons();
 document.querySelector(".symbolsList").style.visibility="hidden";
 
+function saveScreen(){
+        sessionStorage.setItem("refresh", "true");
+        sessionStorage.setItem("storedScreen", activeScreen);
+}
+
+window.onload = function() {
+    let refreshing = sessionStorage.getItem("refresh");
+    if (refreshing) {
+        activeScreen = sessionStorage.getItem("storedScreen");
+        updateButtons();
+        updateText();
+        showHideSymbols();
+    }
+}
+
+//the active screen will display the corresponding strings from the following arrays; an empty string means that that page should have no text in that location
 let topTextArray = ['I can read your mind!', 'Pick a number from 0-99, inclusive', 'Add both digits together to get a new number', 'Subtract the second number from the first', 'Placeholder for bottom text position', "Your number's symbol is"];
 let bottomTextArray = ["Press GO to begin", "Once you've thought of a number, click NEXT", "For example: 14 --> 1 + 4 = 5 7 --> 0 + 7", "ex: 14 - 5 = 9", "Find the symbol corresponding to your new number", ""];
 let pageNumbersArray = ["1 of 6", "2 of 6", "3 of 6", "4 of 6", "5 of 6", "6 of 6"];
 
-function updateButtons(){
+function updateButtons(){ //changes button text and/or visibility when active screen changes
 if (activeScreen == 0 || activeScreen == 5) {
     document.querySelector("#nextButton").style.visibility="hidden";
 } else {
@@ -28,7 +45,8 @@ if (activeScreen == 4) {
     document.getElementById("nextButton").textContent="NEXT";
 }
 }
-function updateText() {
+
+function updateText() { //changes page and button text to that of the new active screen
     document.getElementById("topText").textContent=topTextArray[activeScreen];
     document.getElementById("bottomText").textContent=bottomTextArray[activeScreen];
     document.getElementById("pageNumber").textContent=pageNumbersArray[activeScreen];
@@ -39,7 +57,7 @@ function updateText() {
     }
 }
 
-function showHideSymbols() {
+function showHideSymbols() { //displays list of symbols on the appropriate page and hides it on other pages
     if (activeScreen == 4) {
         document.querySelector(".symbolsList").style.visibility="visible";
     } else {
@@ -47,7 +65,7 @@ function showHideSymbols() {
     }
 }
 
-function goReset() {
+function goReset() { //if on home screen, starts game when "GO" button is clicked; otherwise, "GO" button becomes "RESET" button and resets to home screen
     if (activeScreen == 0) {
         activeScreen = 1;
     } else {
@@ -56,26 +74,29 @@ function goReset() {
     updateText();
     updateButtons();
     showHideSymbols();
+    saveScreen();
 }
 
-function nextScreen() {
+function nextScreen() { //move to next screen when "NEXT" button is clicked
     activeScreen++;
     updateText();
     updateButtons();
     showHideSymbols();
+    saveScreen();
 }
 
-function pageNavigationForwards() {
+function pageNavigationForwards() { //move to next screen when forward arrow is clicked
     if (activeScreen == 5) {
         activeScreen = 0;
         updateText();
         updateButtons();
+        saveScreen();
     } else {
         nextScreen();
     }
 }
 
-function pageNavigationBackwards() {
+function pageNavigationBackwards() { //move to previous screen when backward arrow is clicked
     if (activeScreen == 0) {
         activeScreen = 5;
     } else {
@@ -84,13 +105,15 @@ function pageNavigationBackwards() {
     updateText();
     updateButtons();
     showHideSymbols();
+    saveScreen();
 }
 
-function navigateHome() {
+function navigateHome() { //move to home screen when home icon is clicked
     activeScreen = 0;
     updateText();
     updateButtons();
     showHideSymbols();
+    saveScreen();
 }
 
 document.querySelector("#goResetButton").addEventListener("click", goReset)

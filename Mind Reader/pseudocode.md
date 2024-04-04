@@ -13,6 +13,3 @@ click event for 'next' button to move to next screen
         button = reset
 
 display symbols for each number
-
-REMAINING STUFF TO DO:
-symbols
