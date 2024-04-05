@@ -7,7 +7,7 @@
     top: 70px;
 }
 
-.symbolsList {
+#symbolsList {
     visibility: visible;
     width: 300px;
     height: 400px;
