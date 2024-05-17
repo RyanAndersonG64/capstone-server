@@ -19,7 +19,7 @@ class Customer(models.Model):
     bmx_bikes_owned = models.SmallIntegerField(default=0)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.id}: {self.name}'
 
 class CustomerOrder(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
