@@ -22,18 +22,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '343548fv5mv34up6yn54385p4n9y6547845snvwryte47i34lyt4w8r3u929rru320ru239t03290u2309tu2390t'
+# SECRET_KEY="343548fv5mv34up6yn54385p4n9y6547845snvwryte47i34lyt4w8r3u929rru320ru239t03290u2309tu2390t"
+SECRET_KEY = os.getenv('SECRET_KEY', 'a default-value for local dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
+
+
 # Fly deployment stuff
 
-
+APP_NAME = os.getenv("FLY_APP_NAME", None)
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT =os.path.join(BASE_DIR, 'media')
-
-APP_NAME = os.getenv("FLY_APP_NAME", None)
+if APP_NAME:
+  MEDIA_ROOT = '/mnt/volume_mount/media/'
 
 ALLOWED_HOSTS = ['127.0.0.1', f"{APP_NAME}.fly.dev"]
 
@@ -78,7 +81,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
-    'https://capstone-client-17k6me1bm-ryanandersong64s-projects.vercel.app'
+    'https://capstone-client-17k6me1bm-ryanandersong64s-projects.vercel.app',
+    # 'https://capstone-client-wine.vercel.app/'
+    # 'https://capstone-client-b0yw0jn41-ryanandersong64s-projects.vercel.app/'
     ]
 
 CORS_ALLOW_METHODS = [
@@ -93,7 +98,7 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_HEADERS = [
     'Content-Type',
     'Authorization',
-    'authentication',
+    'Authentication',
 ]
 
 REST_FRAMEWORK = {
