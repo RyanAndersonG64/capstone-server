@@ -8,8 +8,10 @@ class ProfileAdmin(admin.ModelAdmin):
 class ImageAdmin(admin.ModelAdmin):
   pass
 
-class UserPostAdmin(admin.ModelAdmin):
+class ForumPostAdmin(admin.ModelAdmin):
   pass
 
 
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Image, ImageAdmin)
+admin.site.register(ForumPost, ForumPostAdmin)

@@ -30,6 +30,10 @@ urlpatterns = [
     path('edit-post/', edit_post),
     path('delete-post/', delete_post),
     path('like-post/', like_post),
+    path('create-image/', create_image),
+    path('get-images/', get_images),
+    path('delete-image/', delete_image),
+    path('like-image/', like_image),
 ]
 
 if settings.DEBUG:

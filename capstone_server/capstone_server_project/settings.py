@@ -82,8 +82,8 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8080',
     'https://capstone-client-17k6me1bm-ryanandersong64s-projects.vercel.app',
-    # 'https://capstone-client-wine.vercel.app/'
-    # 'https://capstone-client-b0yw0jn41-ryanandersong64s-projects.vercel.app/'
+    'https://capstone-client-wine.vercel.app',
+    'https://capstone-client-b0yw0jn41-ryanandersong64s-projects.vercel.app',
     ]
 
 CORS_ALLOW_METHODS = [

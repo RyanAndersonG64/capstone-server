@@ -39,6 +39,10 @@ def create_user(request):
     profile_serialized = ProfileSerializer(profile)
     return Response(profile_serialized.data)
 
+
+# -- Managing user's ride history --
+
+
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def add_credit(request):
@@ -105,12 +109,17 @@ def set_favorite(request):
     else:
         return Response(serialized_user.errors)
     
+
+# -- CRUD for forum posts --
+
+    
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_post(request):
   poster_id = request.data['posted_by']
   poster = Profile.objects.get(id=poster_id)
   poster_name = poster.first_name
+  
   post = ForumPost.objects.create (
     title = request.data['title'],
     posted_by = poster, #update to find user with requested id
@@ -118,6 +127,7 @@ def add_post(request):
     text_content = request.data['text_content'],
   )
   post.likes.set([])
+
   serialized_post = ForumPostSerializer(post, data=request.data)
   if serialized_post.is_valid():
     serialized_post.save()
@@ -135,17 +145,15 @@ def get_posts(request):
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def edit_post(request):
-    print(f'request = {request.data}')
     post_pk = request.data['post_pk']
-    print(f'post pk ={post_pk}')
     post = ForumPost.objects.get(pk=post_pk)
     request.data['posted_by'] = post.posted_by.id
+
     new_text = request.data['text_content']
     post.text_content = new_text
     request.data['poster_name'] = post.posted_by.first_name
-    print(post)
+
     serialized_post = ForumPostSerializer(post, data = request.data)
-    print(serialized_post)
     if serialized_post.is_valid():
       serialized_post.save()
       return Response(serialized_post.data)
@@ -156,8 +164,8 @@ def edit_post(request):
 @permission_classes([IsAuthenticated])
 def delete_post(request):
     post_pk = request.data['postId']
-    print(f'post pk ={post_pk}')
     post = ForumPost.objects.get(pk=post_pk)
+
     post.delete()
     return Response('DELORTED')
 
@@ -165,19 +173,69 @@ def delete_post(request):
 @permission_classes([IsAuthenticated])
 def like_post(request):
    user = request.data['current_user']
-   profile = Profile.objects.get(pk = user)
    post_pk = request.data['post_id']
    post = ForumPost.objects.get(pk = post_pk)
    request.data['posted_by'] = post.posted_by.id
    request.data['text_content'] = post.text_content
-   if post.likes.filter(pk = post_pk).exists:
-      post.likes.add(user)
-      post.liked_by.add(user)
-      print(post.likes)
+
+   post.likes.add(user)
+   post.liked_by.add(user)
+
    serialized_post = ForumPostSerializer(post, data = request.data)
-   print(serialized_post)
    if serialized_post.is_valid():
       serialized_post.save()
       return Response(serialized_post.data)
    else:
       return Response(serialized_post.errors)
+   
+
+# -- CRUD for images --
+   
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def create_image(request):
+  poster = Profile.objects.get(id = request.data['posted_by'])
+  request.data['poster_name'] = poster.first_name
+
+  image_serialized = ImageSerializer(data=request.data)
+  if image_serialized.is_valid():
+    image_serialized.save()
+    return Response(image_serialized.data, status.HTTP_201_CREATED)
+  return Response(image_serialized.errors)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def get_images(request):
+  images = Image.objects.all()
+  images_serialized = ImageSerializer(images, many=True)
+  return Response(images_serialized.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def delete_image(request):
+  image_pk = request.data['imageId']
+  image = Image.objects.get(pk=image_pk)
+
+  image.delete()
+  return Response('DELORTED')
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser, FormParser])
+def like_image(request):
+   user = request.data['current_user']
+   image_pk = request.data['image']
+   image = Image.objects.get(pk = image_pk)
+
+   image.likes.add(user)
+   image.liked_by.add(user)
+
+   serialized_image = ImageSerializer(image, data = request.data)
+   print(serialized_image)
+   if serialized_image.is_valid():
+      serialized_image.save()
+      return Response(serialized_image.data)
+   else:
+      return Response(serialized_image.errors)
