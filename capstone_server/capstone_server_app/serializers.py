@@ -22,3 +22,33 @@ class ForumPostSerializer(serializers.ModelSerializer):
   class Meta:
     model = ForumPost
     fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Comment
+    fields = '__all__'
+
+class GroupSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Group
+    fields = '__all__'
+
+class FriendInviteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = FriendInvite
+    fields = '__all__'
+
+class GroupInviteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = GroupInvite
+    fields = '__all__'
+
+class GroupJoinRequestSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = GroupJoinRequest
+    fields = '__all__'
+
+class GroupMessageSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = GroupMessage
+    fields = '__all__'
