@@ -41,7 +41,8 @@ urlpatterns = [
     path('create-friend-request/', create_friend_request),
     path('get-friend-requests/', get_friend_requests),
     path('accept-friend-request/', accept_friend_request),
-    path('reject-friend-request', reject_friend_request),
+    path('reject-friend-request/', reject_friend_request),
+    path('delete-friend/', delete_friend),
     path('get-groups/', get_groups),
     path('create-group/', create_group),
     path('get-group-invites/', get_group_invites),
@@ -55,6 +56,8 @@ urlpatterns = [
     path('reject-join-request/', reject_join_request),
     path('get-messages/', get_messages),
     path('send-message/', send_message),
+    path('get-dms/', get_dms),
+    path('send-dm/', send_dm)
 ]
 
 if settings.DEBUG:

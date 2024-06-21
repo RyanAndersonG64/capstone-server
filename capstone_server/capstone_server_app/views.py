@@ -334,16 +334,18 @@ def get_friend_requests(request):
 def create_friend_request(request):
     sender = Profile.objects.get(pk = request.data['sender'])
     reciever = Profile.objects.get(pk = request.data['reciever'])
-    friend_request = FriendInvite.objects.create (
-       sender = sender,
-       reciever = reciever
-  )
-    
-    serialized_friend_request = FriendInviteSerializer(friend_request, data=request.data)
-    if serialized_friend_request.is_valid():
-      serialized_friend_request.save()
-      return Response(serialized_friend_request.data)
-    return Response(serialized_friend_request.errors)
+    if FriendInvite.objects.filter(sender = sender, reciever = reciever).exists() or reciever in sender.friends.all():
+       return Response('already')
+    else:
+      friend_request = FriendInvite.objects.create (
+         sender = sender,
+         reciever = reciever
+      )
+      serialized_friend_request = FriendInviteSerializer(friend_request, data=request.data)
+      if serialized_friend_request.is_valid():
+         serialized_friend_request.save()
+         return Response(serialized_friend_request.data)
+      return Response(serialized_friend_request.errors)
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
@@ -353,8 +355,8 @@ def accept_friend_request(request):
    sender = Profile.objects.get(pk = friend_request.sender.pk)
    reciever = Profile.objects.get(pk = friend_request.reciever.pk)
 
-   sender.friends.add(reciever.pk)
-   reciever.friends.add(sender.pk)
+   sender.friends.add(reciever)
+   reciever.friends.add(sender)
 
    friend_request.delete()
 
@@ -370,6 +372,19 @@ def reject_friend_request(request):
 
    friend_request.delete()
    return Response('no frienderino')
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def delete_friend(request):
+   user = Profile.objects.get(pk = request.data['user'])
+   friend = Profile.objects.get(pk = request.data['friend'])
+
+   user.friends.remove(friend)
+   friend.friends.remove(user)
+
+   profiles = Profile.objects.all()
+   all_profiles_serializer = ProfileSerializer(profiles, many=True)
+   return Response(all_profiles_serializer.data)
 
 #-- Stuff for groups --
 
@@ -413,16 +428,20 @@ def invite_to_group(request):
    group = Group.objects.get(pk = request.data['group'])
    user_being_invited = request.data['invited_user']
    invited_user = Profile.objects.get(pk = user_being_invited)
-   invite = GroupInvite.objects.create (
-      group = group,
-      invited_user = invited_user
-   )
 
-   serialized_invite = GroupInviteSerializer(invite, data = request.data)
-   if serialized_invite.is_valid():
-      serialized_invite.save()
-      return Response(serialized_invite.data)
-   return Response(serialized_invite.errors)
+   if GroupInvite.objects.filter(group = group, invited_user = invited_user).exists() or invited_user in group.members.all():
+       return Response('already')
+   else:
+      invite = GroupInvite.objects.create (
+         group = group,
+         invited_user = invited_user
+      )
+
+      serialized_invite = GroupInviteSerializer(invite, data = request.data)
+      if serialized_invite.is_valid():
+         serialized_invite.save()
+         return Response(serialized_invite.data)
+      return Response(serialized_invite.errors)
 
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
@@ -470,16 +489,20 @@ def create_join_request(request):
    group = Group.objects.get(pk = request.data['group'])
    user_pk = request.data['user']
    user = Profile.objects.get(pk = user_pk)
-   join_request = GroupJoinRequest.objects.create (
-      group = group,
-      sender = user,
-   )
 
-   serialized_request = GroupInviteSerializer(join_request, data = request.data)
-   if serialized_request.is_valid():
-      serialized_request.save()
-      return Response(serialized_request.data)
-   return Response(serialized_request.errors)
+   if GroupJoinRequest.objects.filter(group = group, sender = user).exists() or user in group.members.all():
+       return Response('already')
+   else:
+      join_request = GroupJoinRequest.objects.create (
+         group = group,
+         sender = user,
+      )
+
+      serialized_request = GroupInviteSerializer(join_request, data = request.data)
+      if serialized_request.is_valid():
+         serialized_request.save()
+         return Response(serialized_request.data)
+      return Response(serialized_request.errors)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -540,3 +563,36 @@ def send_message(request):
       message_serialized.save()
       return Response(message_serialized.data)
    return Response(message_serialized.errors)
+
+
+# -- stuff for friend DMs --
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def send_dm(request):
+  sender_id = request.data['sender']
+  sender = Profile.objects.get(id=sender_id)
+  reciever_id = request.data['reciever']
+  reciever = Profile.objects.get(id=reciever_id)
+  
+
+  
+  message = FriendMessage.objects.create (
+    sender = sender,
+    reciever = reciever,
+    text_content = request.data['text_content'],
+  )
+
+  serialized_message = FriendMessageSerializer(message, data=request.data)
+  if serialized_message.is_valid():
+    serialized_message.save()
+    return Response(serialized_message.data)
+  return Response(serialized_message.errors)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+@parser_classes([MultiPartParser, FormParser])
+def get_dms(request):
+  messages = FriendMessage.objects.all()
+  messages_serialized = FriendMessageSerializer(messages, many=True)
+  return Response(messages_serialized.data)

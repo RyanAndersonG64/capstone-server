@@ -52,3 +52,8 @@ class GroupMessageSerializer(serializers.ModelSerializer):
   class Meta:
     model = GroupMessage
     fields = '__all__'
+
+class FriendMessageSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = FriendMessage
+    fields = '__all__'

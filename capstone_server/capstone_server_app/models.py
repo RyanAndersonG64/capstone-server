@@ -74,3 +74,8 @@ class GroupMessage(models.Model):
    sender = models.ForeignKey(Profile, on_delete = models.CASCADE)
    posted_at = models.DateTimeField(auto_now_add=True)
    text_content = models.TextField(max_length=1000)
+
+class FriendMessage(models.Model):
+   sender = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name='dm_sender')
+   reciever = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name='dm_reciever')
+   text_content = models.TextField(max_length=1000)

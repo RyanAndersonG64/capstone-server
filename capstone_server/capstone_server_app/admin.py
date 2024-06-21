@@ -29,6 +29,9 @@ class GroupJoinRequestAdmin(admin.ModelAdmin):
 class GroupMessageAdmin(admin.ModelAdmin):
   pass
 
+class FriendMessageAdmin(admin.ModelAdmin):
+  pass
+
 
 admin.site.register(Profile, ProfileAdmin)
 admin.site.register(Image, ImageAdmin)
@@ -39,3 +42,4 @@ admin.site.register(FriendInvite, FriendInviteAdmin)
 admin.site.register(GroupInvite, GroupInviteAdmin)
 admin.site.register(GroupJoinRequest, GroupJoinRequestAdmin)
 admin.site.register(GroupMessage, GroupMessageAdmin)
+admin.site.register(FriendMessage, FriendMessageAdmin)
