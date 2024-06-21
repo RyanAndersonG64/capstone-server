@@ -109,6 +109,28 @@ def set_favorite(request):
         return Response(serialized_user.errors)
     
 
+# -- stuff for user profiles --
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def change_profile_view(request):
+   user = Profile.objects.get(pk = request.data['user'])
+
+   request.data['coaster_count'] = user.coaster_count
+   request.data['first_name'] = user.first_name
+   request.data['last_name'] = user.last_name
+
+   user.profile_view_state = request.data['new_state']
+
+   serialized_user = ProfileSerializer(user, data = request.data)
+   if serialized_user.is_valid():
+      serialized_user.save()
+      return Response(serialized_user.data)
+   else:
+      return Response(serialized_user.errors)
+
+
 # -- CRUD for forum posts --
 
     
@@ -535,6 +557,28 @@ def reject_join_request(request):
 
    join_request.delete()
    return Response('no joinerino')
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def leave_group(request):
+   group = Group.objects.get(pk = request.data['group'])
+   member = Profile.objects.get(pk = request.data['member_leaving'])
+
+   group.members.remove(member)
+   serialized_group = GroupSerializer(group, data = request.data)
+   if serialized_group.is_valid():
+      serialized_group.save()
+      return Response(serialized_group.data)
+   return Response(serialized_group.errors)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def dissolve_group(request):
+   group = Group.objects.get(pk = request.data['group'])
+
+   group.delete()
+
+   return Response('rip in pepperonis mate')
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
