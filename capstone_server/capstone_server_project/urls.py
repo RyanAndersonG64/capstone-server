@@ -60,7 +60,7 @@ urlpatterns = [
     path('get-messages/', get_messages),
     path('send-message/', send_message),
     path('get-dms/', get_dms),
-    path('send-dm/', send_dm)
+    path('send-dm/', send_dm),
 ]
 
 if settings.DEBUG:

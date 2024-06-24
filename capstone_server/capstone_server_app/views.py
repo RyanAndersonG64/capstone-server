@@ -540,6 +540,11 @@ def accept_join_request(request):
    group = Group.objects.get(pk = join_request.group.id)
 
    group.members.add(join_request.sender)
+   new_members = group.members
+   request.data['founder'] = group.founder.pk
+   request.data['group_admin'] = group.founder
+   request.data['members'] = group.members.all()
+   request.data['name'] = group.name
 
    join_request.delete()
 
